@@ -107,8 +107,8 @@ const computeAllRowStates: ComputedRef<number[]> = computed(function () {
   //   dataNumberStore.allNumberRowStates[index].push([element])
   // });
   //return dataNumberStore.allNumberRowStates
-  console.log(rowIndexRef.value)
-  console.log(dataNumberStore.allRowStates[0])
+  // console.log(rowIndexRef.value)
+  // console.log(dataNumberStore.allRowStates[0])
   return dataNumberStore.allRowStates
 })
 

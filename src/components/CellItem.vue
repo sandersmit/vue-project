@@ -55,18 +55,15 @@ function ArrCount(arg) {
 }
 
 function checkItem(arg, arg2) {
-  // console.log('checkItem')
-  // return (arg == 10) ||
-  // (arg == 6) ||
-  // (arg == 6) ? true : false
 
+  console.log('arg2', arg2)
   const found2 = computeSequentual.value.find((element) => element == arg2);
-  //console.log('found2 index:', found2)
+  console.log('found2 index:', found2)
 
   //const found = dataNumberStore.allFibStates.find((element) => element == arg);
 
   //return found > 0 ? true : false
-  return found2 ? true : false
+  return found2 == arg2 ? true : false
 }
 
 
@@ -126,7 +123,7 @@ const computeHighlightedItem3: ComputedRef<boolean> = computed(function () {
 
 const computeSequentual: ComputedRef<number[]> = computed(function () {
   const founditems = [];
-  const counter = 0;
+  // const counter = 0;
   for (let index = 0; index < props.itemProp.length; index++) {
     const arrayItem = props.itemProp[index];
 
