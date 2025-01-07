@@ -9,6 +9,7 @@ export const useDataNumberStore = defineStore({
     allColumnStates: [],
     allRowStates: [],
     allNumberStates: [0, 0, 0, 0, 0],
+    allNumberArrayStates: [],
     allNumberRowStates: [],
     allFibStates: [1, 2, 3, 5, 8, 13, 21, 34, 55, 89],
     indexOfArrRef: [],
