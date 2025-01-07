@@ -12,8 +12,12 @@ import SupportIcon from './icons/IconSupport.vue'
 const dataNumberStore = useDataNumberStore()
 
 const itemValRef: number = ref()
+const itemShallowRef: number = shallowRef()
 const columnIndexRef: number = ref()
 const rowIndexRef: number = ref()
+//const numberRowColRef = ref(50)
+//shallowRef for no deep rectivity needed. 
+const numberRowColRef = shallowRef(50)
 
 // const arrShallowState: number[] = shallowRef()
 const configTotal = 5
@@ -31,16 +35,16 @@ function initAllNumberStates() {
   dataNumberStore.allColumnStates.length = 0
 
   //filling initial states all 0
-  for (let indexitem = 0; indexitem < 10; indexitem++) {
+  for (let indexitem = 0; indexitem < numberRowColRef.value; indexitem++) {
     //console.log(indexitem)
     dataNumberStore.allColumnStates.push(0)
     dataNumberStore.allRowStates.push(0)
     dataNumberStore.allNumberArrayStates.push([])
   }
 
-  for (let index = 0; index < 10; index++) {
-    //push 5 rows as arrays
-    for (let index2 = 0; index2 < 10; index2++) {
+  for (let index = 0; index < numberRowColRef.value; index++) {
+    //push numberRowColRef rows as arrays
+    for (let index2 = 0; index2 < numberRowColRef.value; index2++) {
       dataNumberStore.allNumberArrayStates[index].push(0)
     }
     // dataNumberStore.allNumberRowStates.push([index])
@@ -190,7 +194,7 @@ watch(
 onMounted(() => {
   initAllNumberStates()
   // initAllNumberRowStates()
-  console.log(dataNumberStore.allColumnStates.length)
+  //console.log(dataNumberStore.allColumnStates.length)
   //console.log(dataNumberStore.allNumberStates)
 })
 </script>
@@ -198,11 +202,11 @@ onMounted(() => {
 <template>
   the welcome component:<br />
   <!-- compute all states: {{ computeAllColumnStates }} <br> -->
-  computeAllRowStates( {{ computeAllRowStates.length }} ):
-  {{ computeAllRowStates }} <br />
-  compute all column states ( {{ computeAllColumnStates.length }} ):
-  {{ computeAllColumnStates }} <br />
-  computeNumberArray: {{ computeNumberArray }}<br>
+  <!-- computeAllRowStates( {{ computeAllRowStates.length }} ): -->
+  <!-- {{ computeAllRowStates }} <br /> -->
+  <!-- compute all column states ( {{ computeAllColumnStates.length }} ): -->
+  <!-- {{ computeAllColumnStates }} <br /> -->
+  <!-- computeNumberArray: {{ computeNumberArray }}<br> -->
   <br>
   <!-- dataNumberStore.allNumberArrayStates:{{ dataNumberStore.allNumberArrayStates }} <br> -->
 

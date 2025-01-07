@@ -23,26 +23,26 @@ const itemindexRef: number = ref()
 //define emits 
 const emitClickedPos = defineEmits(['emit-clicked-position-value'])
 
-function defaultCount(arg, arg2) {
-  //count +1
-  //dataNumberStore.allNumberStates[props.indexRowProp]++
-  console.log(
-    'arg?', arg,
-    'arg2?', arg2,
-    'count itemProp', dataNumberStore.allRowStates[props.indexRowProp],
-    'item in row index ', props.indexRowProp,
-    'item in comlumn index', props.indexColumnProp
-  )
+// function defaultCount(arg, arg2) {
+//   //count +1
+//   //dataNumberStore.allNumberStates[props.indexRowProp]++
+//   console.log(
+//     'arg?', arg,
+//     'arg2?', arg2,
+//     'count itemProp', dataNumberStore.allRowStates[props.indexRowProp],
+//     'item in row index ', props.indexRowProp,
+//     'item in comlumn index', props.indexColumnProp
+//   )
 
-  emitClickedPos('emit-clicked-position-value',
-    dataNumberStore.allNumberStates[props.indexRowProp],
-    //Y
-    props.indexRowProp,
-    //X
-    arg2)
-  // indexNumbPropRef.value++
-  //newFibNumb++ next if true then ++ to next check
-}
+//   emitClickedPos('emit-clicked-position-value',
+//     dataNumberStore.allNumberStates[props.indexRowProp],
+//     //Y
+//     props.indexRowProp,
+//     //X
+//     arg2)
+//   // indexNumbPropRef.value++
+//   //newFibNumb++ next if true then ++ to next check
+// }
 
 function ArrCount(arg) {
   //count +1
@@ -56,9 +56,9 @@ function ArrCount(arg) {
 
 function checkItem(arg, arg2) {
 
-  console.log('arg2', arg2)
+  // console.log('arg2', arg2)
   const found2 = computeSequentual.value.find((element) => element == arg2);
-  console.log('found2 index:', found2)
+  // console.log('found2 index:', found2)
 
   //const found = dataNumberStore.allFibStates.find((element) => element == arg);
 
@@ -133,9 +133,9 @@ const computeSequentual: ComputedRef<number[]> = computed(function () {
       // console.log('foundIndex:', props.itemProp.indexOf(arrayItem))
       founditems.push(index)
       // counter++
-      console.log("push", dataNumberStore.allFibStates.includes(arrayItem))
+      //console.log("push", dataNumberStore.allFibStates.includes(arrayItem))
       if (founditems.length == 5) {
-        console.log('5 found! - return', founditems.length)
+        // console.log('5 found! - return', founditems.length)
         return founditems
       }
       // for (const arrItem of founditems.values()) {
@@ -163,10 +163,6 @@ const computeSequentual: ComputedRef<number[]> = computed(function () {
     // }
     //(founditems[index + 1] - founditems[index]) == 1 ? true : false
   }
-
-
-
-
   return founditems
 })
 
