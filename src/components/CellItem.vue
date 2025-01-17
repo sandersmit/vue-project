@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, reactive, computed, watch, ComputedRef, onMounted } from 'vue'
+import { ref, reactive, computed, watch, ComputedRef, onUpdated, onMounted } from 'vue'
 import { useDataNumberStore } from '../stores/DataNumberStore';
 
 const props = defineProps<{
 
   itemProp: number[]
-  highlightsProp: boolean
+  itemIndexRefProp: number
+  //highlightProp: boolean
   //counterProp: number
   //haltProp: number[]
   //indexColumnProp: number
@@ -17,11 +18,15 @@ const props = defineProps<{
 
 const dataNumberStore = useDataNumberStore();
 //const indexNumbPropRef = ref(props.indexNumbProp)
-
+const colorClassRef: boolean = ref(false)
 const itemindexRef: number = ref()
+const hightlightRef: boolean = ref()
+//const hightlightRef2: boolean = ref(props.highlightProp)
+
 
 //define emits 
-const emitClickedPos = defineEmits(['emit-clicked-position-value'])
+const emitClickedPos = defineEmits(['emit-highlight-value', 'emit-clicked-position-value'])
+//const emithighlight = defineEmits(['emit-highlight-value'])
 
 // function defaultCount(arg, arg2) {
 //   //count +1
@@ -44,13 +49,24 @@ const emitClickedPos = defineEmits(['emit-clicked-position-value'])
 //   //newFibNumb++ next if true then ++ to next check
 // }
 
+
+
 function ArrCount(arg) {
+
+  setHighlight()
+  itemindexRef.value = arg
+  emitClickedPos('emit-clicked-position-value',
+    itemindexRef.value)
   //count +1
   //props.itemProp[arg]++
+
+  colorClassRef.value = true
   props.itemProp[arg]--
   for (let index = 0; index < props.itemProp.length; index++) {
     props.itemProp[index]++
     dataNumberStore.allNumberArrayStates[index][arg]++
+    dataNumberStore.highlightItemStore = true
+    console.log(dataNumberStore.highlightItemStore)
   }
 }
 
@@ -61,21 +77,38 @@ function checkItem(arg, arg2) {
   // console.log('found2 index:', found2)
 
   //const found = dataNumberStore.allFibStates.find((element) => element == arg);
-
+  //console.log('computeSequentual', computeSequentual.value.length)
   //return found > 0 ? true : false
+
   return found2 == arg2 ? true : false
 }
 
+function setHighlight() {
+  console.log("shortHighlight")
+  hightlightRef.value = true
+  dataNumberStore.toggleHighlight(true)
+  //emitClickedPos('emit-highlight-value', hightlightRef2.value)
+  setTimeout(resetHighlight, 700);
+}
 
-const computeAllRowStates: ComputedRef<number[]> = computed(function () {
-  return dataNumberStore.allRowStates
-  //return indexNumbPropRef.value
-})
+function resetHighlight() {
+  hightlightRef.value = false
+  dataNumberStore.toggleHighlight(false)
+  // console.log("RESET after 3 seconds", hightlightRef2.value);
+  //emitClickedPos('emit-highlight-value', hightlightRef2.value)
+}
 
-const computeAllColumnStates: ComputedRef<number[]> = computed(function () {
-  return dataNumberStore.allColumnStates
-  //return indexNumbPropRef.value
-})
+
+
+// const computeAllRowStates: ComputedRef<number[]> = computed(function () {
+//   return dataNumberStore.allRowStates
+//   //return indexNumbPropRef.value
+// })
+
+// const computeAllColumnStates: ComputedRef<number[]> = computed(function () {
+//   return dataNumberStore.allColumnStates
+//   //return indexNumbPropRef.value
+// })
 
 
 
@@ -108,17 +141,20 @@ const computeAllColumnStates: ComputedRef<number[]> = computed(function () {
 //   return highlightItem == props.indexRowProp ? true : false;
 // })
 
-const computeHighlightedItem2: ComputedRef<boolean> = computed(function () {
-  const highlightItem = props.itemProp.filter(
-    (item) => item == 5
-  );
-  return highlightItem;
-})
+// const computeHighlightedItem2: ComputedRef<boolean> = computed(function () {
+//   const highlightItem = props.itemProp.filter(
+//     (item) => item == 5
+//   );
+//   return highlightItem;
+// })
 
-const computeHighlightedItem3: ComputedRef<boolean> = computed(function () {
-  //checks only the first number of the array for fibinachi
-  const highlightItem3 = dataNumberStore.allFibStates.filter((item1) => item1 == props.itemProp.find((item1) => item1))
-  return highlightItem3;
+// const computeHighlightedItem3: ComputedRef<boolean> = computed(function () {
+//   //checks only the first number of the array for fibinachi
+//   const highlightItem3 = dataNumberStore.allFibStates.filter((item1) => item1 == props.itemProp.find((item1) => item1))
+//   return highlightItem3;
+// })
+const computeHighlightedItem: ComputedRef<boolean> = computed(function () {
+  return dataNumberStore.getHighlight
 })
 
 const computeSequentual: ComputedRef<number[]> = computed(function () {
@@ -167,9 +203,9 @@ const computeSequentual: ComputedRef<number[]> = computed(function () {
 })
 
 
-// const computeAllHighlights: ComputedRef<boolean> = computed(function () {
-//   return props.counterProp === 3 ? true : false
-// })
+const computeAllHighlights: ComputedRef<boolean> = computed(function () {
+  return props.itemProp
+})
 
 
 // const computeHalt: ComputedRef<number[] | string> = computed(function () {
@@ -185,10 +221,18 @@ const computeCorrection: ComputedRef<number | string> = computed(function () {
   return dataNumberStore.allRowStates[props.clickedRowposProp] - 1
 })
 
-
 ///watchers
-// watch([computeFebernaci, computeHalt], () => {
-//   //console.log('watcher')
+watch(props.itemProp, () => {
+  console.log('watcher', dataNumberStore.highlightItemStore)
+})
+
+onUpdated(() => {
+  // text content should be the same as current `count.value`
+  console.log('onUpdated')
+})
+// onMounted(() => {
+//   console.log('onMounted')
+//   //  hightlightRef.value = true
 // })
 </script>
 
@@ -209,16 +253,28 @@ const computeCorrection: ComputedRef<number | string> = computed(function () {
   <!-- computeHighlightedItem : {{ computeHighlightedItem }} -->
   <!-- computeHighlightedItem2: {{ computeHighlightedItem2 }}<br>
   computeHighlightedItem3: {{ computeHighlightedItem3 }} <br> -->
-  computeSequentual: {{ computeSequentual }}<br>
+  computeSequentual: {{ computeSequentual }} ({{ computeSequentual.length }})
   <!-- itemindexRef.value: {{ itemindexRef }}<br> -->
 
   <!-- computeCorrection: {{ computeCorrection }}<br> -->
   <!-- props.clickedcoordYProp{{ props.clickedCoordxProp }}
   {{ props.itemProp }} -->
+  <!-- {{ itemindexRef }}
+  {{ props.itemIndexRefProp }} -->
+
   <ul>
-    <li v-for="(item, Arrindex) in props.itemProp" :key="Arrindex">
-      <div class="item">
-        <a @click="ArrCount(Arrindex)" :class="{ greenAttention: checkItem(item, Arrindex) }">
+    <li v-for="(item, Arrindex) in computeAllHighlights" :key="Arrindex">
+      <div v-if="Arrindex == props.itemIndexRefProp" class="item">
+        <!-- {{ computeAllHighlights Y-AS}} -->
+        <a @click="ArrCount(Arrindex)"
+          :class="[{ greenAttention: computeSequentual.length == 5 ? checkItem(item, Arrindex) : false }, { showhighlight: computeHighlightedItem }]">
+          {{ item }}{{ computeHighlightedItem }}
+        </a>
+      </div>
+      <div v-else class="item">
+        <!-- {{ computeAllHighlights X-AS }} -->
+        <a @click="ArrCount(Arrindex)"
+          :class="[{ greenAttention: computeSequentual.length == 5 ? checkItem(item, Arrindex) : false }, { showhighlight: hightlightRef }]">
           {{ item }}
         </a>
       </div>
@@ -276,6 +332,7 @@ const computeCorrection: ComputedRef<number | string> = computed(function () {
 <style scoped lang="scss">
 ul {
   display: flex;
+  padding: 0;
 
   li {
     list-style: none;
@@ -292,9 +349,11 @@ ul {
     cursor: pointer;
     //font-size: 1rem;
     //min-width: 44px;
-    font-size: 1.5rem;
-    min-width: 44px;
+    font-size: 15px;
+    min-width: 25px;
+    min-height: 25px;
     border: solid 1px;
+    padding: 0px;
 
     &.green {
       color: rgb(3, 130, 88);

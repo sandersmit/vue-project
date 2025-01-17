@@ -11,13 +11,14 @@ import SupportIcon from './icons/IconSupport.vue'
 
 const dataNumberStore = useDataNumberStore()
 
-const itemValRef: number = ref()
-const itemShallowRef: number = shallowRef()
+const itemValRef: number = ref(0)
+const itemShallowRef: number = shallowRef(0)
 const columnIndexRef: number = ref()
 const rowIndexRef: number = ref()
-//const numberRowColRef = ref(50)
+const indexRef: number = ref(0)
+const highlightRef: boolean = ref()
 //shallowRef for no deep rectivity needed. 
-const numberRowColRef = shallowRef(50)
+const numberRowColRef = shallowRef(10)
 
 // const arrShallowState: number[] = shallowRef()
 const configTotal = 5
@@ -37,8 +38,8 @@ function initAllNumberStates() {
   //filling initial states all 0
   for (let indexitem = 0; indexitem < numberRowColRef.value; indexitem++) {
     //console.log(indexitem)
-    dataNumberStore.allColumnStates.push(0)
-    dataNumberStore.allRowStates.push(0)
+    dataNumberStore.allColumnStates.push(itemShallowRef)
+    dataNumberStore.allRowStates.push(itemShallowRef)
     dataNumberStore.allNumberArrayStates.push([])
   }
 
@@ -52,49 +53,65 @@ function initAllNumberStates() {
   }
 }
 
-function initAllNumberRowStates(numberState: number) {
-  //console.log(dataNumberStore.allNumberStates)
-  dataNumberStore.allNumberRowStates.length = 0;
-  console.log('initAllNumberRowStates', numberState)
-  for (let index = 0; index < dataNumberStore.allNumberStates.length; index++) {
-    dataNumberStore.allNumberRowStates.push([numberState])
-  }
-}
+// function initAllNumberRowStates(numberState: number) {
+//   //console.log(dataNumberStore.allNumberStates)
+//   dataNumberStore.allNumberRowStates.length = 0;
+//   console.log('initAllNumberRowStates', numberState)
+//   for (let index = 0; index < dataNumberStore.allNumberStates.length; index++) {
+//     dataNumberStore.allNumberRowStates.push([numberState])
+//   }
+// }
 
-function checkAllRowStates(rowNumber: number) {
-  // for (let index = 0; index < dataNumberStore.allRowStates.length; index++) {
-  dataNumberStore.allRowStates[rowNumber]++
-  //}
-}
+// function checkAllRowStates(rowNumber: number) {
+//   // for (let index = 0; index < dataNumberStore.allRowStates.length; index++) {
+//   dataNumberStore.allRowStates[rowNumber]++
+//   //}
+// }
 
-function checkAllColumnStates(colNumber: number) {
-  // for (let index = 0; index < dataNumberStore.allRowStates.length; index++) {
-  dataNumberStore.allColumnStates[colNumber]++
+// function checkAllColumnStates(colNumber: number) {
+//   // for (let index = 0; index < dataNumberStore.allRowStates.length; index++) {
+//   dataNumberStore.allColumnStates[colNumber]++
 
-  // }
-  console.log(
-    'columnIndexRef.value',
-    dataNumberStore.allColumnStates[columnIndexRef.value],
-  )
-  //console.log('checkAllColumnStates', dataNumberStore.allColumnStates[colNumber])
+//   // }
+//   console.log(
+//     'columnIndexRef.value',
+//     dataNumberStore.allColumnStates[columnIndexRef.value],
+//   )
+//   //console.log('checkAllColumnStates', dataNumberStore.allColumnStates[colNumber])
+// }
+
+function resetHighlight() {
+  highlightRef.value = false
 }
 
 //One-Way Data Flow - emited to prop
 function emitClickedPositionValue(
   argument1: number,
   //row:
-  argument2: number,
+  //true
+  argument2: boolean,
   //column:
   argument3: number,
 ) {
   console.log('emited', argument1, argument2, argument3)
   console.log(dataNumberStore.allColumnStates[columnIndexRef.value])
-  itemValRef.value = argument1
-  rowIndexRef.value = argument2
+  indexRef.value = argument1
+  //rowIndexRef.value = argument2
+
   columnIndexRef.value = argument3
-  checkAllRowStates(rowIndexRef.value)
-  checkAllColumnStates(columnIndexRef.value)
+  // checkAllRowStates(rowIndexRef.value)
+  // checkAllColumnStates(columnIndexRef.value)
 }
+
+function emitHighLightValue(argument) {
+  console.log('highlight Emit Send recieved', argument)
+  highlightRef.value = argument
+  setTimeout(resetHighlight, 700);
+}
+
+
+
+
 
 const computeAllRowStates: ComputedRef<number[]> = computed(function () {
   //trigger once : on single change in dataNumberStore.allNumberRowStates state
@@ -116,6 +133,9 @@ const computeAllRowStates: ComputedRef<number[]> = computed(function () {
   return dataNumberStore.allRowStates
 })
 
+const computehighlightStates: ComputedRef<boolean> = computed(function () {
+  return highlightRef.value
+})
 
 const computeAllColumnStates: ComputedRef<number[]> = computed(function () {
   return dataNumberStore.allColumnStates
@@ -125,58 +145,57 @@ const computeCounter: ComputedRef<number> = computed(function () {
   return dataNumberStore.highlightIndexOfArrRef.length
 })
 
-// const computeCount: ComputedRef<number> = computed(function () {
-//   let count = 0
-//   dataNumberStore.highlightIndexOfArrRef.length = 0
-//   for (let index = 0; index < dataNumberStore.indexOfArrRef.length; index++) {
-//     const item = dataNumberStore.indexOfArrRef[index];
-//     if (item != -1 && count < configTotal) {
-//       count++
-//       dataNumberStore.highlightIndexOfArrRef.push(item)
-//       console.log('count', count)
-//       if (count === configTotal) {
-//         console.log('return')
-//       }
-//     } else if (item == -1 && count != configTotal) {
-//       dataNumberStore.highlightIndexOfArrRef.length = 0
-//       count = 0
-//     }
-//   }
-//   return count
-
-// })
-
-const computeEmitedCords: ComputedRef<number[]> = computed(function () {
-  // rowIndexRef.value = argument2
-  // columnIndexRef.value = argument3
-  return ['Y:', rowIndexRef.value, 'X:', columnIndexRef.value]
+const computeCount: ComputedRef<number> = computed(function () {
+  let count = 0
+  dataNumberStore.highlightIndexOfArrRef.length = 0
+  for (let index = 0; index < dataNumberStore.indexOfArrRef.length; index++) {
+    const item = dataNumberStore.indexOfArrRef[index];
+    if (item != -1 && count < configTotal) {
+      count++
+      dataNumberStore.highlightIndexOfArrRef.push(item)
+      console.log('count', count)
+      if (count === configTotal) {
+        console.log('return')
+      }
+    } else if (item == -1 && count != configTotal) {
+      dataNumberStore.highlightIndexOfArrRef.length = 0
+      count = 0
+    }
+  }
+  return count
 })
+
+// const computeEmitedCords: ComputedRef<number[]> = computed(function () {
+//   // rowIndexRef.value = argument2
+//   // columnIndexRef.value = argument3
+//   return ['Y:', rowIndexRef.value, 'X:', columnIndexRef.value]
+// })
 
 const computeHighlights: ComputedRef<boolean> = computed(function () {
   //console.log('total to hightlight', computeCounter.value)
   return computeCounter.value === configTotal ? true : false
 })
 
-const computeHaltCount: ComputedRef<number[]> = computed(function () {
-  let countHalt: number = 0
-  let flag: boolean = false
-  let target: number = -1
-  const haltArr: number[] = []
-  // haltArr = []
-  dataNumberStore.indexOfArrRef.filter(function (item, index) {
-    if (item != -1) {
-      countHalt++
-      if (countHalt > configTotal) {
-        target = item
-        flag = true
-        haltArr.push(item)
-      }
-    } else if (item === -1 && countHalt > configTotal) {
-      countHalt--
-    }
-  })
-  return haltArr
-})
+// const computeHaltCount: ComputedRef<number[]> = computed(function () {
+//   let countHalt: number = 0
+//   let flag: boolean = false
+//   let target: number = -1
+//   const haltArr: number[] = []
+//   // haltArr = []
+//   dataNumberStore.indexOfArrRef.filter(function (item, index) {
+//     if (item != -1) {
+//       countHalt++
+//       if (countHalt > configTotal) {
+//         target = item
+//         flag = true
+//         haltArr.push(item)
+//       }
+//     } else if (item === -1 && countHalt > configTotal) {
+//       countHalt--
+//     }
+//   })
+//   return haltArr
+// })
 
 const computeNumberArray: ComputedRef<boolean> = computed(function () {
   return dataNumberStore.allNumberArrayStates
@@ -185,7 +204,7 @@ const computeNumberArray: ComputedRef<boolean> = computed(function () {
 
 //watchers
 watch(
-  [computeHighlights, computeCounter, computeHaltCount, computeAllRowStates],
+  [computeCounter],
   () => {
     //console.log('watcher')
   },
@@ -200,72 +219,66 @@ onMounted(() => {
 </script>
 
 <template>
-  the welcome component:<br />
-  <!-- compute all states: {{ computeAllColumnStates }} <br> -->
-  <!-- computeAllRowStates( {{ computeAllRowStates.length }} ): -->
-  <!-- {{ computeAllRowStates }} <br /> -->
-  <!-- compute all column states ( {{ computeAllColumnStates.length }} ): -->
-  <!-- {{ computeAllColumnStates }} <br /> -->
-  <!-- computeNumberArray: {{ computeNumberArray }}<br> -->
-  <br>
-  <!-- dataNumberStore.allNumberArrayStates:{{ dataNumberStore.allNumberArrayStates }} <br> -->
-
-  <!-- compute all rows ({{ dataNumberStore.allNumberRowStates.length }}) : {{ dataNumberStore.allNumberRowStates }}<br> -->
-
-  <!-- computeHighlights (counter) {{ computeHighlights }} <br> -->
-
-  <!-- computeCounter ? : {{ computeCounter }} <br> -->
-
-  <!-- computeCount ? : {{ computeCount }} <br> -->
-
-  <!-- computeHaltCount X : {{ computeHaltCount }} <br> -->
-
-  highlightIndexOfArrRef : {{ dataNumberStore.highlightIndexOfArrRef }} <br />
-
-  <!-- <ul>
-    <li v-for="item in dataNumberStore.allNumberStates" :key="item">
-      repeat {{ item }}
-    </li>
-  </ul> -->
-
-  <button @click="reset()">Reset all nummbers</button>
+  <div class="page">
+    <h1>Frontend Challenge: Interactive Grid</h1>
+    <ul>
+      <li>
+        Total rows: <span>{{ computeAllRowStates.length }}</span>
+      </li>
+      <li>
+        Total numbers : <span>{{ computeAllColumnStates.length * computeAllRowStates.length }}</span>
+      </li>
+      <li>
+        Fibonacci numbers<span v-for="(item, index) in dataNumberStore.allFibStates" :key="index"> - {{ item }} </span>
+      </li>
+      <li>
+        <button @click="reset()">Reset all nummbers</button>
+      </li>
+    </ul>
+  </div>
+  <!-- {{ dataNumberStore.highlightItemStore }} -->
+  {{ dataNumberStore.getHighlight }}
+  {{ computehighlightStates }}
   <section>
-    total rows: {{ computeAllRowStates.length }} <br />
-    1e row in rows state {{ computeAllRowStates[0] }}<br />
-    coordinates (Y): {{ computeEmitedCords[1] }} <br />
-    coordinates (X): {{ computeEmitedCords[3] }} <br />
-    <!-- <div class="row" v-for="(item1, index1) in 10" :key="index1">
-      {{ item1 }} -->
-    {{ dataNumberStore.allRowStates[rowIndexRef] }}<br />
-    {{ rowIndexRef }}
-    ?{{ dataNumberStore.allRowStates[rowIndexRef] === 2 ? true : false }}
-    <br />
-    <br />
-
-    <!-- <CellItem v-for="(item, index) in computeAllRowStates" :key="index"
-      :item-Prop="index === computeEmitedCords[1] ? [item, computeEmitedCords[3]] : [item]" :index-Row-Prop="index"
-      :highlights-Prop="computeHighlights" :halt-Prop="computeHaltCount" :index-Column-Prop="columnIndexRef"
-      :counter-Prop="computeCounter" :clicked-Colpos-Prop="columnIndexRef" :clicked-Coordx-Prop="computeEmitedCords[3]"
-      :clicked-Rowpos-Prop="rowIndexRef" @emit-clicked-position-value="emitClickedPositionValue">
-      <template #icon>
-        <DocumentationIcon />
-      </template>
-<template #heading>Documentation</template>
-<template #content>
-        Vue’s
-        <a href="https://vuejs.org/" target="_blank" rel="noopener">official documentation</a>
-        provides you with
-      </template>
-all information you need to get started.
-</CellItem> -->
-
     <CellItem v-for="(item, index) in dataNumberStore.allNumberArrayStates" :key="index" :item-Prop="item"
-      :highlights-Prop="computeHighlights" @emit-clicked-position-value="emitClickedPositionValue">
+      :item-Index-Ref-Prop="indexRef" :highlight-Prop="computehighlightStates"
+      @emit-clicked-position-value="emitClickedPositionValue" @emit-highlight-value="emitHighLightValue">
     </CellItem>
-    <!-- </div> -->
   </section>
 </template>
 <style scoped>
+.page {
+  display: flex;
+
+  ul {
+    display: flex;
+    list-style: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+    padding-inline-start: 0px;
+
+    li {
+      padding: 1rem;
+    }
+
+    span {
+      color: rgb(11, 243, 165);
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .page {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+}
+
 section {
   .row {
     display: flex;

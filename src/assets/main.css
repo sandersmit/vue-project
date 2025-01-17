@@ -6,6 +6,29 @@
   padding: 2rem;
   font-weight: normal;
 }
+.logo {
+  width: 30px;
+}
+
+button {
+  border: solid 1px rgb(10, 169, 116);
+  padding: 0.5rem;
+  background-color: transparent;
+  color: rgb(10, 169, 116);
+  cursor: pointer;
+}
+
+@keyframes highlight {
+  0% {
+    color: rgb(10, 169, 116);
+  }
+  50% {
+    color: yellow;
+  }
+  100% {
+    color: rgb(10, 169, 116);
+  }
+}
 
 /* .green  */
 a {
@@ -20,6 +43,9 @@ a {
     color: rgb(11, 243, 165);
     transition: 0.4s;
   }
+  &.showhighlight {
+    animation: highlight 1000ms ease-out;
+  }
 }
 
 @media (hover: hover) {
@@ -33,8 +59,8 @@ a {
 
 @media (min-width: 1024px) {
   body {
-    display: flex;
-    place-items: center;
+    /* display: flex;
+    place-items: center; */
   }
 
   #app {
