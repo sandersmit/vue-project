@@ -1,5 +1,6 @@
 @import './base.css';
-
+html {
+}
 #app {
   max-width: 1280px;
   margin: 0 auto;
@@ -48,14 +49,15 @@ a {
   }
 }
 
-@media (hover: hover) {
+/* @media (hover: hover) {
   a:hover {
     background-color: hsla(160, 100%, 37%, 0.2);
+    border: solid 1px;
     i {
       border-color: rgb(10, 169, 116);
     }
   }
-}
+} */
 
 @media (min-width: 1024px) {
   body {

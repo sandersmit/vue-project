@@ -3,17 +3,8 @@ import { ref, reactive, computed, watch, ComputedRef, onUpdated, onMounted } fro
 import { useDataNumberStore } from '../stores/DataNumberStore';
 
 const props = defineProps<{
-
   itemProp: number[]
   itemIndexRefProp: number
-  //highlightProp: boolean
-  //counterProp: number
-  //haltProp: number[]
-  //indexColumnProp: number
-  //indexRowProp: number
-  // clickedColposProp: number
-  // clickedRowposProp: number
-  // clickedCoordxProp: number
 }>()
 
 const dataNumberStore = useDataNumberStore();
@@ -21,6 +12,7 @@ const dataNumberStore = useDataNumberStore();
 const colorClassRef: boolean = ref(false)
 const itemindexRef: number = ref()
 const hightlightRef: boolean = ref()
+
 //const hightlightRef2: boolean = ref(props.highlightProp)
 
 
@@ -109,8 +101,6 @@ function resetHighlight() {
 //   return dataNumberStore.allColumnStates
 //   //return indexNumbPropRef.value
 // })
-
-
 
 
 // const computeFebernaci: ComputedRef<boolean> = computed(function () {
@@ -203,7 +193,8 @@ const computeSequentual: ComputedRef<number[]> = computed(function () {
 })
 
 
-const computeAllHighlights: ComputedRef<boolean> = computed(function () {
+const computeAllHighlights: ComputedRef<number[]> = computed(function () {
+  //console.log(props.itemProp)
   return props.itemProp
 })
 
@@ -215,25 +206,27 @@ const computeAllHighlights: ComputedRef<boolean> = computed(function () {
 //   return findItem
 // })
 
-const computeCorrection: ComputedRef<number | string> = computed(function () {
-  console.log(dataNumberStore.allRowStates[props.clickedRowposProp] - 1)
-  dataNumberStore.allRowStates[props.clickedRowposProp] - 1
-  return dataNumberStore.allRowStates[props.clickedRowposProp] - 1
-})
+// const computeCorrection: ComputedRef<number | string> = computed(function () {
+//   console.log(dataNumberStore.allRowStates[props.clickedRowposProp] - 1)
+//   dataNumberStore.allRowStates[props.clickedRowposProp] - 1
+//   return dataNumberStore.allRowStates[props.clickedRowposProp] - 1
+// })
 
 ///watchers
 watch(props.itemProp, () => {
   console.log('watcher', dataNumberStore.highlightItemStore)
 })
 
-onUpdated(() => {
-  // text content should be the same as current `count.value`
-  console.log('onUpdated')
-})
-// onMounted(() => {
-//   console.log('onMounted')
-//   //  hightlightRef.value = true
+// onUpdated(() => {
+//   // text content should be the same as current `count.value`
+//   console.log('onUpdated')
 // })
+onMounted(() => {
+  //console.log('onMounted', props.itemProp)
+
+  //dataNumberStore.initAllRowColFinal()
+  //hightlightRef.value = true
+})
 </script>
 
 <template>
@@ -253,7 +246,7 @@ onUpdated(() => {
   <!-- computeHighlightedItem : {{ computeHighlightedItem }} -->
   <!-- computeHighlightedItem2: {{ computeHighlightedItem2 }}<br>
   computeHighlightedItem3: {{ computeHighlightedItem3 }} <br> -->
-  computeSequentual: {{ computeSequentual }} ({{ computeSequentual.length }})
+  <!-- computeSequentual: {{ computeSequentual }} ({{ computeSequentual.length }}) -->
   <!-- itemindexRef.value: {{ itemindexRef }}<br> -->
 
   <!-- computeCorrection: {{ computeCorrection }}<br> -->
@@ -268,7 +261,7 @@ onUpdated(() => {
         <!-- {{ computeAllHighlights Y-AS}} -->
         <a @click="ArrCount(Arrindex)"
           :class="[{ greenAttention: computeSequentual.length == 5 ? checkItem(item, Arrindex) : false }, { showhighlight: computeHighlightedItem }]">
-          {{ item }}{{ computeHighlightedItem }}
+          {{ item }}
         </a>
       </div>
       <div v-else class="item">
@@ -280,53 +273,6 @@ onUpdated(() => {
       </div>
     </li>
   </ul>
-  <!-- <ul>
-    <li v-for="(item, itemindex) in props.itemProp" :key="itemindex">
-      <div class="item">
-        <a v-if="itemindex === props.indexRowProp && props.indexRowProp === 3" class="number green" :class="{
-          greenAttention: (props.itemProp + dataNumberStore.allColumnStates[itemindex]) ===
-            dataNumberStore.allFibStates[itemindex]
-        }" @click="defaultCount(props.itemProp, itemindex)">
-          !!
-        </a>
-        <a v-else class="number green" :class="{
-          greenAttention: (props.itemProp + dataNumberStore.allColumnStates[itemindex]) ===
-            dataNumberStore.allFibStates[itemindex]
-        }" @click="defaultCount(props.itemProp, itemindex)">
-          {{ itemindex === props.indexColumnProp ? computeCorrection : (props.itemProp + item) }}
-          {{ props.itemProp + item }}
-        </a>
-        <a class="number green" :class="{
-          greenAttention: (props.itemProp + dataNumberStore.allColumnStates[itemindex]) ===
-            dataNumberStore.allFibStates[itemindex]
-        }" @click="defaultCount(props.itemProp, itemindex)">
-
-          {{ item }}
-        </a>
-      </div>
-    </li>
-  </ul> -->
-  <!-- <div class="item">
-    <a class="number green" :class="`${indexRowProp}`, { all: computeHighlightedItem }"
-      @click="defaultCount(props.itemProp)">
-      {{ computeNumberState }} -->
-  <!-- <i :class="{ greenAttention: computeFebernaci, all: computeHighlightedItem }">
-        <slot name="icon">
-        </slot>
-      </i> -->
-  <!-- </a>
-    <br> -->
-
-
-
-  <!-- <div class="details">
-      <h3>
-        <slot name="heading"></slot>
-      </h3>
-      <slot name="content"></slot>
-      <slot></slot>
-    </div> -->
-  <!-- </div> -->
 </template>
 
 <style scoped lang="scss">
@@ -346,13 +292,22 @@ ul {
   text-align: center;
 
   a {
+
+
+    &:hover {
+      border: solid 1px rgb(3, 130, 88);
+      background-color: rgb(3, 130, 88);
+      ;
+    }
+
     cursor: pointer;
     //font-size: 1rem;
     //min-width: 44px;
     font-size: 15px;
     min-width: 25px;
     min-height: 25px;
-    border: solid 1px;
+    border: solid 1px rgb(3, 130, 88);
+    // border: solid 1px transparent;
     padding: 0px;
 
     &.green {
